@@ -23,7 +23,7 @@
 
       <div class="row mb-3">
         <div class="col-2">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
                     Durée
             </div>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="col-2">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
                     Attestation Obtenue
             </div>
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="col-3">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
                     Prérequis Scolaires
             </div>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="col-3">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
               Equipement Informatique
             </div>
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="col-2">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
               Stage
             </div>
@@ -96,15 +96,15 @@
 
       <div class="row mb-3">
         <div class="col-6">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
               <div class="row">
                 <div class="col-10 text-start">Brochure de Formation</div>
                 <div class="col-2">
                   {% if formation.lien_brochure %}
-                  <button type="button" class="btn btn-outline-success p-1 w-100" onclick="copyEvent('lien_brochure')">Copier</button>
+                  <button id="btn1" type="button" class="btn btn-outline-success p-1 w-100" onclick="copyEvent('lien_brochure', 'btn1')">Copier</button>
                   {%else%}
-                  <button disabled type="button" class="btn btn-outline-success p-1 w-100" onclick="copyEvent('lien_brochure')">Copier</button>
+                  <button disabled type="button" class="btn btn-outline-success p-1 w-100">Copier</button>
                   {%endif%}
                 </div>
               </div>
@@ -121,15 +121,15 @@
           </div>
         </div>
         <div class="col-6">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
               <div class="row">
                 <div class="col-10 text-start">Eligibilité CPF</div>
                 <div class="col-2">
                   {% if formation.lien_cpf %}
-                  <button type="button" class="btn btn-outline-success w-100 p-1" onclick="copyEvent('lien_cpf')">Copier</button>
+                  <button id="btn2" type="button" class="btn btn-outline-success w-100 p-1" onclick="copyEvent('lien_cpf', 'btn2')">Copier</button>
                   {%else%}
-                  <button disabled type="button" class="btn btn-outline-success w-100 p-1" onclick="copyEvent('lien_cpf')">Copier</button>
+                  <button disabled type="button" class="btn btn-outline-success w-100 p-1" >Copier</button>
                   {%endif%}
                 </div>
               </div>
@@ -150,7 +150,7 @@
 
       <div class="row mb-3">
           <div class="col-3">
-            <div class="card border border-success border2 h-100">
+            <div class="card border border-success  h-100">
               <div class="card-header fw-bold p-2 text-success text-center">
                      Débouchés 
               </div>
@@ -168,7 +168,7 @@
             </div>
           </div>
           <div class="col-3">
-            <div class="card border border-success border2 h-100">
+            <div class="card border border-success  h-100">
               <div class="card-header fw-bold p-2 text-success text-center">
                       Evolutions Professionnelles
               </div>
@@ -186,7 +186,7 @@
             </div>
           </div>
           <div class="col-6">
-            <div class="card border border-success border2 h-100">
+            <div class="card border border-success  h-100">
               <div class="card-header fw-bold p-2 text-success text-center">
                       Fonctions et Missions
               </div>
@@ -207,7 +207,7 @@
 
       <div class="row mb-3">
         <div class="col-6">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
                    Pourquoi l'EFC ? 
             </div>
@@ -225,7 +225,7 @@
           </div>
         </div>
         <div class="col-6">
-          <div class="card border border-success border2 h-100">
+          <div class="card border border-success  h-100">
             <div class="card-header fw-bold p-2 text-success text-center">
                     Qualités Requises
             </div>
@@ -249,9 +249,9 @@
       <hr class="border border-1">
 
       <div class="accordion" id="accordionExample">
-        <div class="accordion-item">
+        <div class="accordion-item border border-success border-1">
           <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            <button class="accordion-button collapsed text-success fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
               Tarif Plain - {{tarifs.plain.total|floatformat:"2g"}}€
             </button>
           </h2>
@@ -259,7 +259,7 @@
             <div class="accordion-body row">
               {%for tarif in tarifs.plain.echeances%}
                 <div class="col-2 my-2">
-                  <div class="card border border-success border2 h-100">
+                  <div class="card border border-success h-100">
                     <div class="card-header fw-bold p-2 text-success text-center">
                       {{tarif.formule}} - {{tarif.nombre_mois}} mois
                     </div>
@@ -280,9 +280,9 @@
             </div>
           </div>
         </div>
-        <div class="accordion-item">
+        <div class="accordion-item border border-success border-1">
           <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <button class="accordion-button collapsed text-success fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
               Tarif -15% - {{tarifs.minus15.total|floatformat:"2g"}}€
             </button>
           </h2>
@@ -290,7 +290,7 @@
             <div class="accordion-body row">
               {%for tarif in tarifs.minus15.echeances%}
                 <div class="col-2 my-2">
-                  <div class="card border border-success border2 h-100">
+                  <div class="card border border-success  h-100">
                     <div class="card-header fw-bold p-2 text-success text-center">
                       {{tarif.formule}} - {{tarif.nombre_mois}} mois
                     </div>
@@ -311,9 +311,9 @@
             </div>
           </div>
         </div>
-        <div class="accordion-item">
+        <div class="accordion-item border border-success border-1">
           <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <button class="accordion-button collapsed text-success fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 Tarif -25% - {{tarifs.minus25.total|floatformat:"2g"}}€
             </button>
           </h2>
@@ -321,7 +321,7 @@
             <div class="accordion-body row">
               {%for tarif in tarifs.minus25.echeances%}
                 <div class="col-2 my-2">
-                  <div class="card border border-success border2 h-100">
+                  <div class="card border border-success  h-100">
                     <div class="card-header fw-bold p-2 text-success text-center">
                       {{tarif.formule}} - {{tarif.nombre_mois}} mois
                     </div>
@@ -346,10 +346,21 @@
     {% endif %}
 
     <script>
-        function copyEvent(id)
+        function disable_copy_btn(btn){
+          btn.innerHTML = "Copié";
+          btn.classList.toggle('disabled');
+          window.setTimeout(() => {
+            btn.innerHTML = "Copier";
+            btn.classList.remove('disabled');
+          }, 2000);
+        }  
+
+        function copyEvent(text_id, btn_id)
         {
-            var str = document.getElementById(id).innerHTML;
+            var str = document.getElementById(text_id).innerHTML;
             navigator.clipboard.writeText(str);        
+            var btn = document.getElementById(btn_id);
+            disable_copy_btn(btn);
         }
     </script>
 {% endblock %}
