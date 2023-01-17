@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+
+{% block title %}Formations Disponibles{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% for branche in branches %}
+    <div class="col-6">
+      <h2 class="text-success">{{branche.description}}</h2>
+      <hr/>
+      {% for formation in branche.formations %}
+      <a class="mb-1 badge rounded-pill border border-2 border-info text-secondary text-decoration-none fs-6 " href="{% url 'details_get' formation.code_formation %}">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</a> <br/>
+      {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

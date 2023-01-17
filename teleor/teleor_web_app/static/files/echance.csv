@@ -1,0 +1,11 @@
+Formule§Nombre de mois§Acompte §Mensualité
+Formule A§3§PT * 30 %§RAC au 3ème Mois
+Formule Abis2x5§3§PT * 30 %§RAC/2
+Formule Abis3x5§4§PT * 30 %§RAC/3
+Formule B§8§55§RAC/8
+Formule C§12§55§RAC/12
+Formule D§18§55§RAC/18
+Formule E§24§55§RAC/24
+Formule F§30§55§RAC/30
+Formule G§36§55§RAC/36
+Formule H§42§55§RAC/42
