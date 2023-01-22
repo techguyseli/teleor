@@ -1,8 +1,12 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+
+from .forms import CalculatriceCpfForm
 from .models import *
 from decimal import Decimal
+import json
+import math
 
 @login_required
 def index(request):
@@ -18,11 +22,10 @@ def index(request):
         "branches" : branches
     })
 
-def calculateur_tarifs(formation, echeance, remise):
+def calculateur_tarifs(formule, tarif_sans_acompte, acompte_formation, duree, remise):
     remise = Decimal(remise)
-    formule = echeance.code_echeance
-    total = (formation.tarif_sans_acompte + formation.acompte) * (1 - remise)
-    nombre_mois = echeance.duree
+    total = (tarif_sans_acompte + acompte_formation) * (1 - remise)
+    nombre_mois = duree
     acompte = None
     mensualite = None
     note = None
@@ -34,7 +37,7 @@ def calculateur_tarifs(formation, echeance, remise):
         else:
             mensualite = (total - acompte) / (nombre_mois - 1)
     else:
-        acompte = formation.acompte
+        acompte = acompte_formation
         mensualite = (total - acompte) / nombre_mois
     return {
             "formule" : formule,
@@ -54,7 +57,6 @@ def details_get(request, code):
     missions = None        
     qualites_requis = None
     avantages = None
-    echeances = None
     tarifs = None
 
     try:
@@ -93,11 +95,11 @@ def details_get(request, code):
         }
 
     for echeance in formation.echeances_tarif_plain.all():
-        tarifs["plain"]["echeances"].append(calculateur_tarifs(formation, echeance, 0))
+        tarifs["plain"]["echeances"].append(calculateur_tarifs(echeance.code_echeance, formation.tarif_sans_acompte, formation.acompte, echeance.duree, 0))
     for echeance in formation.echeances_tarif_minus15.all():
-        tarifs["minus15"]["echeances"].append(calculateur_tarifs(formation, echeance, 0.15))
+        tarifs["minus15"]["echeances"].append(calculateur_tarifs(echeance.code_echeance, formation.tarif_sans_acompte, formation.acompte, echeance.duree, 0.15))
     for echeance in formation.echeances_tarif_minus25.all():
-        tarifs["minus25"]["echeances"].append(calculateur_tarifs(formation, echeance, 0.25))
+        tarifs["minus25"]["echeances"].append(calculateur_tarifs(echeance.code_echeance, formation.tarif_sans_acompte, formation.acompte, echeance.duree, 0.25))
             
     return render(request, "details/details.html", {
         'formation' : formation,
@@ -118,6 +120,27 @@ def details_post(request):
         return redirect("details_get", code)
     except:
         return redirect('index')
+
+
+@login_required
+def calculate_cpf_post(request):
+    form = CalculatriceCpfForm(request.POST)
+    if not form.is_valid():
+        return HttpResponse(form.errors.as_json(), content_type="application/json")
+
+    formation = form.cleaned_data["formation"]
+    echeance = form.cleaned_data["echeance"] 
+    solde_cpf =  form.cleaned_data["solde_cpf"]
+
+    data = calculateur_tarifs(echeance.code_echeance, formation.tarif_sans_acompte - solde_cpf, formation.acompte, echeance.duree, 0)
+    response_data = {}
+    response_data["acompte"] = float(data["acompte"])
+    response_data["mensualite"] = float(data["mensualite"])
+    response_data["rac"] = float(formation.tarif_sans_acompte + formation.acompte - solde_cpf)
+    response_data["note"] = data["note"]
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
 def database_fill(request):
     ### add type formation 

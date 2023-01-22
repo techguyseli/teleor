@@ -5,11 +5,17 @@
 {% block content %}
 <div class="row">
     {% for branche in branches %}
-    <div class="col-6">
+    <div class="col-6 mb-3">
       <h2 class="text-success">{{branche.description}}</h2>
-      <hr/>
+      <hr class="pt-0 mt-1 opacity-100"/>
       {% for formation in branche.formations %}
-      <a class="mb-1 badge rounded-pill border border-2 border-info text-secondary text-decoration-none fs-6 " href="{% url 'details_get' formation.code_formation %}">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</a> <br/>
+        {% if formation.type_formation.description == 'Diplômante' %}
+          <a class="mb-1 badge rounded-pill border border-1 bg-primary text-light text-decoration-none fs-6 fw-normal" href="{% url 'details_get' formation.code_formation %}">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</a> <br/>
+        {%elif formation.type_formation.description == 'Qualifiante'%}
+          <a class="mb-1 badge rounded-pill border border-1 bg-danger text-light text-decoration-none fs-6 fw-normal" href="{% url 'details_get' formation.code_formation %}">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</a> <br/>
+        {%else%}
+          <a class="mb-1 badge rounded-pill border border-1 bg-dark text-light text-decoration-none fs-6 fw-normal" href="{% url 'details_get' formation.code_formation %}">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</a> <br/>
+        {%endif%}
       {% endfor %}
     </div>
     {% endfor %}

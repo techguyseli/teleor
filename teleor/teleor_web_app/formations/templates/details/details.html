@@ -18,8 +18,8 @@
             Il n'existe aucune formation avec se code.
         </div>
     {% else %}
-      <h5 class="text-success">Details de Formation</h5>
-      <hr class="border border-1">
+      <h5 class="text-success">DETAILS DE LA FORMATION</h5>
+      <hr class="pt-0 mt-1 border border-1 border-success opacity-100">
 
       <div class="row mb-3">
         <div class="col-2">
@@ -245,14 +245,14 @@
         <div class="col-0 mx-2"></div>
       </div>
 
-      <h5 class="text-success">Tarifs et Modalités de Paiement</h5>
-      <hr class="border border-1">
+      <h5 class="text-success">TARIFS ET MODALITE DE PAIMENT</h5>
+      <hr class="pt-0 mt-1 border border-1 opacity-100 border-success">
 
       <div class="accordion" id="accordionExample">
         <div class="accordion-item border border-success border-1">
           <h2 class="accordion-header" id="headingOne">
             <button class="accordion-button collapsed text-success fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-              Tarif Plain - {{tarifs.plain.total|floatformat:"2g"}}€
+              Tarif Plein - {{tarifs.plain.total|floatformat:"2g"}}€
             </button>
           </h2>
           <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -342,25 +342,133 @@
             </div>
           </div>
         </div>
+        {% if formation.lien_cpf %}
+        <div class="accordion-item border border-success border-1">
+          <h2 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed text-light bg-success fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                SIMULATEUR CPF
+            </button>
+          </h2>
+          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <form class="border border-success rounded p-3" onsubmit="return false;">
+                {%csrf_token%}
+                <label for="tarif_total" class="form-label text-success fw-bold">Tarif Total</label>
+                <input disabled id="tarif_total" type="text" value="{{tarifs.plain.total|floatformat:"2g"}} €" class="form-control form-control-md mb-2">
+                <label for="echeance" class="form-label text-success fw-bold">Formule de Financement</label>
+                <select id="echeance" class="form-control form-control-md mb-3" onchange="changeSoldeCPFBounds();">
+                  {%for echeance in tarifs.plain.echeances%}
+                  <option value="{{echeance.formule}}">{{echeance.formule}} - {{echeance.nombre_mois}} Mois</option>
+                  {%endfor%}
+                </select>
+                <label for="solde_cpf" class="form-label text-success fw-bold">Solde CPF</label>
+                <input id="solde_cpf" type="number" step="0.01" min="500" class="form-control form-control-md mb-2">
+                <button class="btn btn-success" onclick="sendForm();">Calculer</button>
+              </form>
+              <div id="response_result" hidden class="mt-3 container-fluid bg-success rounded text-light fs-4 text-center">
+                <div class="row">
+                  <div id="rac" class="col p-2"></div>
+                  <div id="acompte" class="col p-2 border-2 border-start border-end border-light"></div>
+                  <div id="mensualite" class="col p-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%endif%}
       </div>
     {% endif %}
 
+    <script src="http://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script>
-        function disable_copy_btn(btn){
-          btn.innerHTML = "Copié";
-          btn.classList.toggle('disabled');
-          window.setTimeout(() => {
-            btn.innerHTML = "Copier";
-            btn.classList.remove('disabled');
-          }, 2000);
-        }  
+      function changeSoldeCPFBounds(){
+        var min = 500;
+        var echeanceIsA = $( "#echeance" ).val().toLowerCase().startsWith("formule a");
+        var solde_cpf = $( "#solde_cpf" );               
+        var tarif_total = {{tarifs.plain.total|floatformat:"2"}}; 
+        var acompte = {{formation.acompte|floatformat:"2"}};
+        var max = Math.floor(tarif_total * 0.96);
+        var placeholder = "Minimum "  + min + "€.";
+        if(echeanceIsA && tarif_total - max < acompte){
+          max = tarif_total - acompte;
+        } 
+        solde_cpf.attr("max", max);
+        solde_cpf.attr("min", min);
+        solde_cpf.attr("placeholder", placeholder);
+      }
 
-        function copyEvent(text_id, btn_id)
-        {
-            var str = document.getElementById(text_id).innerHTML;
-            navigator.clipboard.writeText(str);        
-            var btn = document.getElementById(btn_id);
-            disable_copy_btn(btn);
-        }
+      function formIsValid(){
+        var solde_cpf_tag = $( "#solde_cpf" );               
+        var solde_cpf = parseFloat(solde_cpf_tag.val());
+        var max = parseFloat(solde_cpf_tag.attr("max"));
+        var min = parseFloat(solde_cpf_tag.attr("min"));
+
+        var soldeBoundsValid = solde_cpf <= max && solde_cpf >= min;
+        
+        var validity = soldeBoundsValid;
+
+        return validity;
+      }
+
+      function sendForm(){
+        var formation = {{formation.code_formation}}; 
+        var echeance = $( "#echeance" ).val(); 
+        var solde_cpf = $( "#solde_cpf" ).val();               
+        var csrf_token = $( 'input[name="csrfmiddlewaretoken"]' ).val();
+        if(!formIsValid()) return;
+        var request = $.ajax({
+          url: "{%url 'calculate_cpf_post'%}",
+          method: "POST",
+          data: { 
+                  csrfmiddlewaretoken : csrf_token,
+                  formation : formation,
+                  echeance : echeance,
+                  solde_cpf : solde_cpf
+                },
+          dataType: "json"
+        });
+
+        request.done(function( data ) {
+          var response_tag = $("#response_result");
+          var rac = $("#rac");
+          var acompte = $("#acompte");
+          var mensualite = $("#mensualite");
+
+          var racMessage = "RAC : ";
+          var acompteMessage = "Acompte : ";
+          var mensualiteMessage = data.note == null ? "Mensualité : " : data.note + " : ";
+
+          response_tag.removeAttr("hidden");
+          rac.html(racMessage + data.rac.toFixed(2) + "€");
+          acompte.html(acompteMessage + data.acompte.toFixed(2) + "€");
+          mensualite.html(mensualiteMessage + data.mensualite.toFixed(2) + "€");
+          console.log( data );
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+          console.log("Request failed: " + textStatus );
+        });     
+      }
+
+      function disable_copy_btn(btn){
+        btn.innerHTML = "Copié";
+        btn.classList.toggle('disabled');
+        window.setTimeout(() => {
+          btn.innerHTML = "Copier";
+          btn.classList.remove('disabled');
+        }, 2000);
+      }  
+
+      function copyEvent(text_id, btn_id)
+      {
+          var str = document.getElementById(text_id).innerHTML;
+          navigator.clipboard.writeText(str);        
+          var btn = document.getElementById(btn_id);
+          disable_copy_btn(btn);
+      }
+
+      $(document).ready(function(){
+        changeSoldeCPFBounds();
+      });
     </script>
 {% endblock %}
