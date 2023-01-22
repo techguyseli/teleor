@@ -8,6 +8,9 @@ from decimal import Decimal
 import json
 import math
 
+def get_copyrights(request):
+    return render(request, 'copyright/copyright.html')
+
 @login_required
 def index(request):
     formations = Formation.objects.all()

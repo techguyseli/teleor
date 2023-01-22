@@ -9,7 +9,14 @@
 {% endblock %}
 
 {% block formation_header %}
-{{ formation.code_formation }} - {{ formation.intitule_formation }} - {{ formation.type_formation.description }}
+  {% if formation.type_formation.description == 'Diplômante' %}
+    <span class="mb-1 badge rounded-pill bg-primary text-light text-decoration-none fs-6 fw-normal">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</span>
+  {%elif formation.type_formation.description == 'Qualifiante'%}
+    <span class="mb-1 badge rounded-pill bg-danger text-light text-decoration-none fs-6 fw-normal">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</span>
+  {%else%}
+    <span class="mb-1 badge rounded-pill bg-dark text-light text-decoration-none fs-6 fw-normal">{{formation.code_formation}} | {{formation.intitule_formation}} - {{formation.type_formation.description}}</span>
+  {%endif%}
+
 {% endblock %}
 
 {% block content %}
